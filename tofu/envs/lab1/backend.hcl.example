@@ -1,0 +1,3 @@
+# Example only. Copy to backend.hcl and adapt to the chosen target.
+# Keep backend values outside git.
+path = "CHANGE_ME/backend.tfstate"

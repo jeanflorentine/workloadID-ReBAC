@@ -1,0 +1,43 @@
+target_platform = "proxmox"
+proxmox_endpoint = "https://192.168.1.44:8006/"
+proxmox_node_name = "proxmox-1"
+proxmox_vm_id     = 2410
+
+image_datastore_id    = "local"
+vm_datastore_id       = "local-lvm"
+cloud_image_source_path = "C:/Projects/Orange-Lab1/artifacts/debian-12-genericcloud-amd64.qcow2"
+cloud_image_url        = ""
+cloud_image_file_name   = "debian-12-genericcloud-amd64.qcow2"
+# If you already imported the Bookworm image into Proxmox, set this existing file ID instead.
+# Example: cloud_image_file_id = "local:import/debian-12-genericcloud-amd64.qcow2"
+# cloud_image_file_id = ""
+
+vm_name        = "orange-lab1"
+vm_description = "Orange Lab 1 portable single-node k3s reference VM"
+vm_tags        = ["orange", "lab", "portable", "k3s"]
+
+cpu_cores         = 4
+memory_mb         = 8192
+enable_ballooning = false
+disk_size_gb      = 40
+
+network_bridge   = "vmbr0"
+network_vlan_id  = 0
+vm_username      = "debian"
+vm_ipv4_address  = "192.168.1.210"
+vm_ipv4_cidr     = "192.168.1.210/24"
+vm_ipv4_gateway  = "192.168.1.1"
+dns_servers      = ["192.168.1.1", "1.1.1.1"]
+dns_search_domain = "home.lab"
+
+vm_ssh_public_key    = "REPLACE_WITH_YOUR_PUBLIC_KEY"
+ssh_private_key_path = "C:/Users/jflorentin/.ssh/id_ed25519"
+vm_started           = true
+k3s_channel          = "stable"
+
+namespace_names = [
+  "identity",
+  "secrets",
+  "storage",
+  "authorization"
+]

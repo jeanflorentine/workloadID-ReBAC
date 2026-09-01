@@ -1,0 +1,33 @@
+# Terraform / OpenTofu state
+**/.terraform/
+**/.terraform.lock.hcl
+**/*.tfstate
+**/*.tfstate.*
+**/crash.log
+**/crash.*.log
+**/tfplan
+**/tfplan.*
+**/tfplan-*
+**/override.tf
+**/override.tf.json
+**/*_override.tf
+**/*_override.tf.json
+
+# Variable and backend files with local values
+**/*.auto.tfvars
+**/*.auto.tfvars.json
+**/terraform.tfvars
+**/terraform.tfvars.json
+**/backend.hcl
+
+# Secrets and kubeconfig
+**/secrets/
+**/*.secret
+**/*.secrets.*
+**/kubeconfig
+**/kubeconfig.*
+
+# Local helper output
+out/
+artifacts/
+.tmp/

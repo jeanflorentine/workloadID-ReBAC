@@ -1,0 +1,41 @@
+---
+references:
+  - "File: /scripts/bootstrap-workstation.ps1"
+  - "File: /scripts/check-prereqs.ps1"
+  - "File: /scripts/smoke-test.ps1"
+generationTime: 2026-09-01T22:43:27.161Z
+---
+flowchart TD
+    A["Start: Orange Lab 1"] --> B["Display Target Platform"]
+    B --> C["Display Setup Instructions"]
+    C --> D{Check Prerequisites}
+    
+    D -->|check-prereqs.ps1| E["Initialize Tools List"]
+    E --> F["Iterate Through Tools"]
+    F --> G{Tool Found?}
+    G -->|Yes| H["Record Tool Path"]
+    G -->|No| I["Record as Missing"]
+    H --> J{More Tools?}
+    I --> J
+    J -->|Yes| F
+    J -->|No| K["Display Results Table"]
+    
+    D -->|Proceed if OK| L["Review Documentation"]
+    L --> M{Run Smoke Test?}
+    
+    M -->|smoke-test.ps1| N{Kube Context Provided?}
+    N -->|Yes| O["Set Kube Context"]
+    N -->|No| P["Use Default Context"]
+    O --> Q["Execute Test Checklist"]
+    P --> Q
+    Q --> R["Verify VM Reachable"]
+    R --> S["Verify kubectl Access"]
+    S --> T["Verify Node Status"]
+    T --> U["Verify Keycloak Health"]
+    U --> V["Display Test Results"]
+    
+    M -->|No| W["Initialize IaC Tool"]
+    V --> X["End: Setup Complete"]
+    W --> X
+    
+    K --> L
