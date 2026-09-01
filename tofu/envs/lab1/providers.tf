@@ -8,8 +8,16 @@ variable "target_platform" {
   }
 }
 
-provider "helm" {}
-provider "kubernetes" {}
+provider "helm" {
+  kubernetes {
+    config_path = var.kubeconfig_path
+  }
+}
+
+provider "kubernetes" {
+  config_path = var.kubeconfig_path
+}
+
 provider "openstack" {}
 provider "proxmox" {
   endpoint      = var.proxmox_endpoint

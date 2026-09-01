@@ -26,6 +26,7 @@
 **/*.secrets.*
 **/kubeconfig
 **/kubeconfig.*
+**/orange-lab1.yaml
 
 # Local helper output
 out/

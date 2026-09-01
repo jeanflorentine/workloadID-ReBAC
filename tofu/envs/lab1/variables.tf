@@ -200,3 +200,8 @@ variable "namespace_names" {
   description = "Namespaces to create once the cluster is reachable."
   type        = list(string)
 }
+
+variable "kubeconfig_path" {
+  description = "Path to the local kubeconfig used by Kubernetes and Helm providers."
+  type        = string
+}
