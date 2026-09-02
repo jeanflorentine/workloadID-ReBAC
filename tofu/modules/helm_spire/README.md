@@ -1,3 +1,3 @@
 # helm_spire
 
-Placeholder module for the future SPIRE Helm deployment layer.
+Deploys the SPIRE control plane and agent set used for workload identity experiments.

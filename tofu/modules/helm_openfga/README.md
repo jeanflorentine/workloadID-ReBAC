@@ -1,3 +1,3 @@
 # helm_openfga
 
-Placeholder module for the future OpenFGA Helm deployment layer.
+Deploys OpenFGA in a lightweight lab-friendly profile so the authorization plane is present in Phase 1.

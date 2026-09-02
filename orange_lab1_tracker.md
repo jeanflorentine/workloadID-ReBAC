@@ -6,7 +6,7 @@ Single source of truth for planning, deployment strategy, and execution tracking
 - Priority: High, ahead of the previous Keycloak book lab
 - Workspace: C:\Projects\Orange-Lab1
 - Related reference: C:\Projects\KeyCloack-Lab\KeyCloack_Lab_Book_tracker.md
-- Last updated: 2026-09-01
+- Last updated: 2026-09-02
 
 ---
 
@@ -147,7 +147,7 @@ Orange-Lab1/
   scripts/
     check-prereqs.ps1
     bootstrap-workstation.ps1
-    smoke-test.ps1
+    phase1-week1.ps1
 ```
 
 ## 4.4 Version and pinning policy
@@ -298,7 +298,7 @@ By end of initial setup window (before or on Friday), success means:
 
 1. A portable single-node k3s lab runtime is operational.
 2. IaC project structure is ready and runnable.
-3. At least Keycloak and one additional core component are deployed via IaC.
+3. All lab platform components cited by the specialization plan are declared and deployable via IaC: k3s, Keycloak, SPIRE, OpenBao or Vault, MinIO, and OpenFGA.
 4. Orange laptop can run the lab autonomously or rebuild it locally from the same code.
 5. The same workload layer is reusable later on Orange Proxmox or OpenStack.
 
@@ -306,28 +306,46 @@ By end of initial setup window (before or on Friday), success means:
 
 ## 6. Next concrete actions
 
-1. Populate the first real target values for home Proxmox in the lab1 environment.
-2. Turn proxmox_vm from scaffold into the first working VM provisioning module.
-3. Turn k3s_bootstrap from scaffold into the first working runtime bootstrap module.
-4. Decide the first guest OS image and pin it in the runbook.
-5. Execute the first VM plus k3s smoke path and capture evidence in docs/runbooks.md.
-6. Send the runtime decision request to Orange using docs/orange_vm_runtime_request_email.md.
-7. Keep Proxmox runtime path and WSL tooling path progressing in parallel until Orange answers.
-8. As soon as the Orange laptop arrives, verify Hyper-V availability before choosing any alternative local hypervisor.
+1. Finish the Week 4 token-exchange path by seeding the required Keycloak realm, client, and policy objects.
+2. Use the projected-token demo workload as the input subject for the first Keycloak token-exchange proof.
+3. Extend the Week 4 script with a negative test for wrong audience or unauthorized client configuration.
+4. Send the runtime decision request to Orange using docs/orange_vm_runtime_request_email.md.
+5. As soon as the Orange laptop arrives, verify Hyper-V availability before choosing any alternative local hypervisor.
 
 Execution status update:
 1. Preference-order alignment is done across docs (WSL 2 second, VirtualBox third).
 2. Parallel runbooks are now command-level and ready:
   - Proxmox runtime path in docs/proxmox_runtime_path.md.
   - WSL tooling path in docs/wsl_tooling_path.md.
-3. VM path progress: Terraform installed, init and validate succeeded, plan reached the expected Proxmox credential gate.
-4. WSL path progress: documented and generated, implementation intentionally deferred for now.
-5. VM path gate passed: plan now succeeds with credentials (`3 to add, 0 to change, 0 to destroy`).
-6. Remaining pre-apply gate: replace placeholder SSH public key in local var-file and save a plan with `-out`.
-7. OpenTofu is now installed and validated as the active IaC CLI path for this lab.
-8. Dedicated lab SSH keypair created and wired into local `terraform.tfvars`.
-9. Apply attempt reached provisioning stage but failed on Proxmox-side external image fetch (HTTP 401), so image-source fallback support was added.
-10. Current decision gate: choose between URL-based image fetch and pre-existing `cloud_image_file_id` mode.
+3. OpenTofu baseline is operational on Proxmox with a running single-node k3s VM.
+4. Foundation namespaces are applied and drift-free.
+5. Keycloak, SPIRE, OpenBao, MinIO, and OpenFGA are all deployed through IaC in the lab1 environment.
+6. `tofu plan` is back to zero drift after the full platform deployment.
+7. `tofu state list` now includes the platform releases for Keycloak, SPIRE, OpenBao, MinIO, and OpenFGA.
+8. Pod health is confirmed for the deployed Phase 1 platform components.
+9. Phase 1 is now closed under the strict IaC interpretation.
+10. Phase 1 closeout issues are resolved: SPIRE now installs its CRDs before the main chart, and MinIO now runs without the broken optional console image.
+11. The smoke gate is being widened from a Keycloak-only check to a reusable whole-platform validation path.
+12. Phase 2 Week 4 execution has started: cluster OIDC discovery and JWKS are verified, Keycloak admin automation is confirmed, and the projected-token demo workload is now scripted.
+13. Phase 2 validation criteria are defined separately in docs/phase2_workload_identity_validation.md and now become the active execution track.
+14. Week 4 debugging initially followed a wrong Keycloak authorization model: the script assumed `adminPermissionsEnabled=true` would expose an `admin-permissions` client for token-exchange policy seeding.
+15. That assumption was tested and disproved by raw `kcadm.sh` queries: `clientId=admin-permissions` returned an empty result while the other clients were present, and the realm still reported `adminPermissionsEnabled=false` after the attempted update.
+16. A second wrong branch came from feature-name drift across Keycloak versions and documentation. We first tried separate `--feature-...=enabled` flags, which crashed the Bitnami container. We then tried `--features=authorization,admin-fine-grained-authz,token-exchange-standard`, which also failed because the running image did not recognize `token-exchange-standard`.
+17. The live container logs were the turning point: they showed that the valid startup syntax was the consolidated `--features=` form and that the accepted feature name in this runtime was `token-exchange`, not `token-exchange-standard`.
+18. After restoring Keycloak with `--features=authorization,admin-fine-grained-authz,token-exchange`, the decisive API discovery was that the correct authorization path is client-scoped management permissions, not a realm-level `admin-permissions` client.
+19. The working path is now: enable `clients/<target>/management/permissions`, read the generated `token-exchange` permission id, create the requester client policy under `realm-management`, and update that generated permission to reference the requester policy.
+20. With that model in place, `scripts/phase2-week4.ps1` now completes successfully with RFC 8693 positive HTTP 200 and negative HTTP 400 for an invalid audience.
+21. WSL path progress remains documented but intentionally deferred.
+
+Week 4 debugging chronology worth keeping:
+1. Initial failure: `Failed to resolve one or more Keycloak UUIDs for the token-exchange fixture`.
+2. First theory rejected: parser fragility. Raw `kcadm.sh get clients -q clientId=admin-permissions` returned `[ ]`.
+3. Second theory rejected: realm flag took effect but objects were delayed. Read-back still showed `adminPermissionsEnabled : false`.
+4. Third theory partly right but incomplete: newer Keycloak feature naming mattered, but blindly following docs introduced the wrong feature flag syntax and then the wrong feature name for this specific image.
+5. First recovery failure: Keycloak pod entered `CrashLoopBackOff` because `--feature-authorization=enabled` was not a valid startup option in the Bitnami container.
+6. Second recovery failure: `token-exchange-standard` was still rejected by the live image.
+7. Final discovery: `clients/<target>/management/permissions` generated the real `token-exchange` scope permission and `realm-management` owned the relevant authorization server.
+8. Final fix: patch `scripts/phase2-week4.ps1` to use the runtime's accepted feature list and the client-management-permissions authorization path.
 
 Operational slice 3 clarification:
 1. Slice 3 means comparing command outputs and behavior between PowerShell-native and WSL-based executions.
@@ -350,7 +368,7 @@ Completed in this workspace:
 3. Operational documentation created: architecture, portability strategy, migration path, runbooks, and local hypervisor decision note.
 4. Environment scaffold created under tofu/envs/lab1.
 5. First module skeletons created for Proxmox, local hypervisor, OpenStack, k3s bootstrap, and Kubernetes namespaces.
-6. Placeholder service module directories created for Keycloak, SPIRE, OpenBao, MinIO, and OpenFGA.
+6. Service module directories created for Keycloak, SPIRE, OpenBao, MinIO, and OpenFGA.
 7. Workstation helper scripts created and the prerequisite check executed successfully.
 8. Decision-request email, Proxmox runtime path, and WSL tooling path documents created.
 9. Command-level sequences added to Proxmox runtime and WSL tooling paths.
@@ -368,4 +386,6 @@ Completed in this workspace:
 - Constraint added: the lab must remain usable from Orange offices and customer sites without access to home infrastructure.
 - Verified bootstrap fact: home Proxmox admin GUI reachable at `https://192.168.1.44:8006` on 2026-09-01.
 - Output objective: start implementation immediately and keep the lab movable across laptop and Orange-hosted virtualization.
-- Last updated: 2026-09-01.
+- Phase 1 closeout: remaining platform components deployed, zero drift restored, SPIRE CRD ordering fixed, and MinIO console image issue avoided.
+- Phase 2 status: Week 4 execution started with live OIDC discovery, JWKS, projected-token demo workload, and verified Keycloak admin automation.
+- Last updated: 2026-09-02.

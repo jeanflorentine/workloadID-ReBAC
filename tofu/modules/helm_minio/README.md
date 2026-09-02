@@ -1,3 +1,3 @@
 # helm_minio
 
-Placeholder module for the future MinIO Helm deployment layer.
+Deploys a single-node MinIO instance for object storage and future STS demonstrations.

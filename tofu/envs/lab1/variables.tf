@@ -191,7 +191,7 @@ locals {
 
 check "cloud_image_source" {
   assert {
-    condition = local.using_existing_image_file_id || var.cloud_image_source_path != "" || (var.cloud_image_url != "" && var.cloud_image_file_name != "")
+    condition     = local.using_existing_image_file_id || var.cloud_image_source_path != "" || (var.cloud_image_url != "" && var.cloud_image_file_name != "")
     error_message = "Set cloud_image_file_id, cloud_image_source_path, or set both cloud_image_url and cloud_image_file_name."
   }
 }
@@ -244,6 +244,162 @@ variable "keycloak_admin_password" {
 
 variable "keycloak_timeout_seconds" {
   description = "Helm wait timeout for Keycloak installation."
+  type        = number
+  default     = 900
+}
+
+variable "enable_spire" {
+  description = "Whether to deploy SPIRE through Helm."
+  type        = bool
+  default     = false
+}
+
+variable "spire_namespace" {
+  description = "Namespace where SPIRE is deployed."
+  type        = string
+  default     = "identity"
+}
+
+variable "spire_release_name" {
+  description = "Helm release name for SPIRE."
+  type        = string
+  default     = "spire"
+}
+
+variable "spire_chart_version" {
+  description = "SPIRE Helm chart version. Leave empty to use the repository default."
+  type        = string
+  default     = ""
+}
+
+variable "spire_trust_domain" {
+  description = "SPIRE trust domain for the lab cluster."
+  type        = string
+  default     = "orange.lab"
+}
+
+variable "spire_timeout_seconds" {
+  description = "Helm wait timeout for SPIRE installation."
+  type        = number
+  default     = 900
+}
+
+variable "enable_openbao" {
+  description = "Whether to deploy OpenBao through Helm."
+  type        = bool
+  default     = false
+}
+
+variable "openbao_namespace" {
+  description = "Namespace where OpenBao is deployed."
+  type        = string
+  default     = "secrets"
+}
+
+variable "openbao_release_name" {
+  description = "Helm release name for OpenBao."
+  type        = string
+  default     = "openbao"
+}
+
+variable "openbao_chart_version" {
+  description = "OpenBao Helm chart version. Leave empty to use the repository default."
+  type        = string
+  default     = ""
+}
+
+variable "openbao_root_token" {
+  description = "Development root token injected into the OpenBao dev server."
+  type        = string
+  sensitive   = true
+}
+
+variable "openbao_timeout_seconds" {
+  description = "Helm wait timeout for OpenBao installation."
+  type        = number
+  default     = 900
+}
+
+variable "enable_minio" {
+  description = "Whether to deploy MinIO through Helm."
+  type        = bool
+  default     = false
+}
+
+variable "minio_namespace" {
+  description = "Namespace where MinIO is deployed."
+  type        = string
+  default     = "storage"
+}
+
+variable "minio_release_name" {
+  description = "Helm release name for MinIO."
+  type        = string
+  default     = "minio"
+}
+
+variable "minio_chart_version" {
+  description = "MinIO Helm chart version. Leave empty to use the repository default."
+  type        = string
+  default     = ""
+}
+
+variable "minio_root_user" {
+  description = "MinIO root user for the lab deployment."
+  type        = string
+  default     = "minioadmin"
+}
+
+variable "minio_root_password" {
+  description = "MinIO root password for the lab deployment."
+  type        = string
+  sensitive   = true
+}
+
+variable "minio_timeout_seconds" {
+  description = "Helm wait timeout for MinIO installation."
+  type        = number
+  default     = 900
+}
+
+variable "enable_openfga" {
+  description = "Whether to deploy OpenFGA through Helm."
+  type        = bool
+  default     = false
+}
+
+variable "openfga_namespace" {
+  description = "Namespace where OpenFGA is deployed."
+  type        = string
+  default     = "authorization"
+}
+
+variable "openfga_release_name" {
+  description = "Helm release name for OpenFGA."
+  type        = string
+  default     = "openfga"
+}
+
+variable "openfga_chart_version" {
+  description = "OpenFGA Helm chart version. Leave empty to use the repository default."
+  type        = string
+  default     = ""
+}
+
+variable "openfga_datastore_engine" {
+  description = "OpenFGA datastore engine used for the lab deployment."
+  type        = string
+  default     = "memory"
+}
+
+variable "openfga_log_level" {
+  description = "OpenFGA log verbosity."
+  type        = string
+  default     = "info"
+}
+
+variable "openfga_timeout_seconds" {
+  description = "Helm wait timeout for OpenFGA installation."
   type        = number
   default     = 900
 }

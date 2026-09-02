@@ -1,3 +1,3 @@
 # helm_openbao
 
-Placeholder module for the future OpenBao or Vault Helm deployment layer.
+Deploys a development OpenBao instance used to validate dynamic secret flows later in the lab.

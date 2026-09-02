@@ -2,7 +2,7 @@
 references:
   - "File: /scripts/bootstrap-workstation.ps1"
   - "File: /scripts/check-prereqs.ps1"
-  - "File: /scripts/smoke-test.ps1"
+  - "File: /scripts/phase1-week1.ps1"
 generationTime: 2026-09-01T22:43:27.161Z
 ---
 flowchart TD
@@ -23,7 +23,7 @@ flowchart TD
     D -->|Proceed if OK| L["Review Documentation"]
     L --> M{Run Smoke Test?}
     
-    M -->|smoke-test.ps1| N{Kube Context Provided?}
+    M -->|phase1-week1.ps1| N{Kube Context Provided?}
     N -->|Yes| O["Set Kube Context"]
     N -->|No| P["Use Default Context"]
     O --> Q["Execute Test Checklist"]
