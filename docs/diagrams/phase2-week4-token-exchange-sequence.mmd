@@ -1,0 +1,21 @@
+sequenceDiagram
+    autonumber
+    participant OP as Operator week4 script
+    participant POD as workload identity pod
+    participant K8S as Kubernetes OIDC issuer
+    participant KC as Keycloak requester client
+    participant KCP as Keycloak authorization policy
+    participant TGT as Keycloak target client
+    OP->>POD: Start Week 4 validation
+    POD->>K8S: Read projected service account JWT
+    K8S-->>POD: Return issuer and JWKS references
+    POD->>KC: Submit subject token for RFC8693 exchange
+    KC->>KCP: Evaluate token exchange permission and audience
+    KCP-->>KC: Decision allow for target client1
+    KC->>TGT: Mint exchanged access token for target audience
+    TGT-->>POD: Return exchanged token
+    OP->>POD: Trigger negative audience test
+    POD->>KC: Exchange request with invalid audience
+    KC->>KCP: Evaluate invalid audience
+    KCP-->>KC: Decision deny audience not found
+    KC-->>POD: Return HTTP 400 invalid client

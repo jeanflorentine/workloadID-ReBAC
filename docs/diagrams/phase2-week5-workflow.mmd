@@ -1,0 +1,16 @@
+%%{init: {"themeVariables": {"fontSize": "20px"}, "flowchart": {"nodeSpacing": 40, "rankSpacing": 70}} }%%
+flowchart TB
+    A[Start phase2-week5.ps1] --> B[Wait SPIRE control plane pods ready]
+    B --> C[Apply week5 SPIRE identity demo manifest]
+    C --> D[Rollout allowed and denied demo deployments]
+    D --> E[Read SPIRE registration entries]
+    E --> F[Build expected allowed SPIFFE ID]
+    F --> G[Build expected denied SPIFFE ID]
+    G --> H{Allowed ID present}
+    H -->|No| X[Fail gate]
+    H -->|Yes| I{Denied ID absent}
+    I -->|No| X
+    I -->|Yes| J[Read SPIRE trust bundle]
+    J --> K{Certificate present}
+    K -->|No| X
+    K -->|Yes| L[Emit WEEK5 markers and complete]

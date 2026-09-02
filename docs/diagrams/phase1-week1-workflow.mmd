@@ -1,0 +1,15 @@
+%%{init: {"themeVariables": {"fontSize": "20px"}, "flowchart": {"nodeSpacing": 40, "rankSpacing": 70}} }%%
+flowchart TB
+    A[Start phase1-week1.ps1] --> B[Run remote node and pod inventory]
+    B --> C[Wait Keycloak pods ready]
+    C --> D[Wait SPIRE pods ready]
+    D --> E[Wait OpenBao pods ready]
+    E --> F[Wait MinIO pods ready]
+    F --> G[Wait OpenFGA pods ready]
+    G --> H[Assert service endpoint Keycloak]
+    H --> I[Assert service endpoint SPIRE]
+    I --> J[Assert service endpoint OpenBao]
+    J --> K[Assert service endpoint MinIO]
+    K --> L[Assert service endpoint OpenFGA]
+    L --> M[Run Keycloak OIDC health probe via API server proxy]
+    M --> N[Smoke test gate passed]

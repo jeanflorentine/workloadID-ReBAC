@@ -1,0 +1,73 @@
+%%{init: {"themeVariables": {"fontSize": "21px"}, "flowchart": {"nodeSpacing": 42, "rankSpacing": 72}} }%%
+flowchart TB
+    OP[Operator Script Runner]
+
+    subgraph CLUSTER[Lab1 Kubernetes Cluster]
+        direction TB
+
+        subgraph W4[Week 4 Token Exchange Plane]
+            direction TB
+            W4POD[workload-identity-demo Pod]
+            K8SOIDC[Kubernetes API OIDC Issuer and JWKS]
+            KC[Keycloak Realm workload-identity]
+            KCPOL[Keycloak Authorization Policy Engine]
+        end
+
+        subgraph W5[Week 5 SPIFFE and mTLS Plane]
+            direction TB
+            SPIFSERVER[SPIRE Server]
+            SPIFAGENT[SPIRE Agent]
+            ALLOWED[spire-demo-allowed Pod]
+            DENIED[spire-demo-denied Pod]
+            RELYAPP[Protected Relying Workload]
+        end
+
+        subgraph W6[Week 6 Zero Secret Runtime Plane]
+            direction TB
+            OBAO[OpenBao Kubernetes Auth]
+            OBAOPOL[OpenBao Role and Policy]
+            MINIOADM[MinIO Admin API]
+            MINIODATA[MinIO S3 Data API]
+            OBAOOK[openbao-authz-ok Pod]
+            OBAOBAD[openbao-authz-denied Pod]
+        end
+    end
+
+    OP -->|"1: run week scripts"| W4POD
+    W4POD -->|"2: read projected SA JWT"| K8SOIDC
+    K8SOIDC -->|"3: issuer and JWKS metadata"| W4POD
+    W4POD -->|"4: subject token"| KC
+    KC -->|"5: evaluate audience and exchange policy"| KCPOL
+    KCPOL -->|"6: allow or deny exchange"| KC
+    KC -->|"7: exchanged access token"| W4POD
+
+    OP -->|"8: run SPIRE checks"| SPIFSERVER
+    SPIFSERVER -->|"9: registration entries and trust bundle"| OP
+    SPIFSERVER -->|"10: issue X509 SVID and JWT SVID"| SPIFAGENT
+    SPIFAGENT -->|"11: deliver SVID to allowed pod"| ALLOWED
+    ALLOWED -->|"12: prove SPIFFE identity"| RELYAPP
+    RELYAPP -->|"13: verify trust domain and SAN"| ALLOWED
+    DENIED -->|"14: missing SPIRE entry"| RELYAPP
+
+    OP -->|"15: run OpenBao and MinIO checks"| OBAOOK
+    OBAOOK -->|"16: login with SA JWT"| OBAO
+    OBAO -->|"17: token review against Kubernetes"| K8SOIDC
+    OBAO -->|"18: evaluate role binding"| OBAOPOL
+    OBAOPOL -->|"19: issue leased client token"| OBAO
+    OBAO -->|"20: return dynamic secret"| OBAOOK
+    OBAOBAD -->|"21: unauthorized JWT"| OBAO
+
+    OBAOOK -->|"22: request temporary MinIO credentials"| MINIOADM
+    MINIOADM -->|"23: create expiring access key"| OBAOOK
+    OBAOOK -->|"24: use temporary credentials"| MINIODATA
+    OBAOBAD -->|"25: wrong credentials path denied"| MINIODATA
+
+    classDef issuer fill:#d7f0ff,stroke:#0b5a7a,stroke-width:2px,color:#000000;
+    classDef verifier fill:#ffe9d6,stroke:#a74a00,stroke-width:2px,color:#000000;
+    classDef relying fill:#e9f9df,stroke:#2f6b1f,stroke-width:2px,color:#000000;
+    classDef policy fill:#fff6cc,stroke:#7a6700,stroke-width:2px,color:#000000;
+
+    class K8SOIDC,KC,SPIFSERVER,MINIOADM issuer;
+    class KCPOL,OBAOPOL verifier;
+    class W4POD,ALLOWED,RELYAPP,OBAOOK relying;
+    class OBAO,DENIED,OBAOBAD,MINIODATA policy;

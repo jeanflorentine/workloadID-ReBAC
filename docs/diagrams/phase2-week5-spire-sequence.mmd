@@ -1,0 +1,20 @@
+sequenceDiagram
+    autonumber
+    participant OP as Operator week5 script
+    participant SS as SPIRE server
+    participant SA as SPIRE agent
+    participant AP as allowed workload pod
+    participant DP as denied workload pod
+    participant RP as relying workload endpoint
+    OP->>SS: Check control plane health and list entries
+    SS-->>OP: Return registration entries and trust bundle
+    SS->>SA: Publish SVID material and bundle updates
+    SA->>AP: Deliver SPIFFE SVID for allowed service account
+    AP->>RP: Present workload identity over trust channel
+    RP->>SS: Validate trust domain and registration lineage
+    SS-->>RP: Confirm allowed identity
+    RP-->>AP: Allow request
+    DP->>RP: Attempt call without valid SPIRE entry
+    RP->>SS: Resolve denied identity
+    SS-->>RP: No matching SPIRE entry
+    RP-->>DP: Deny unauthorized workload

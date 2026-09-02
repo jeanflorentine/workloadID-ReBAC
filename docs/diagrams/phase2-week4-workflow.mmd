@@ -1,0 +1,14 @@
+%%{init: {"themeVariables": {"fontSize": "20px"}, "flowchart": {"nodeSpacing": 40, "rankSpacing": 70}} }%%
+flowchart TB
+    A[Start phase2-week4.ps1] --> B[Check cluster OIDC discovery endpoint]
+    B --> C[Check cluster JWKS endpoint]
+    C --> D[Apply projected token demo manifest]
+    D --> E[Rollout workload identity demo deployment]
+    E --> F[Read projected service account token from demo pod]
+    F --> G[Decode token claims issuer subject audience expiry]
+    G --> H[Ensure Keycloak token-exchange feature flags]
+    H --> I[Run RFC8693 setup and exchange suite]
+    I --> J[Positive exchange must return HTTP 200]
+    J --> K[Negative exchange must fail]
+    K --> L[Validate exchanged token audience]
+    L --> M[Week 4 execution slice completed]

@@ -8,6 +8,35 @@ The goal is not only to deploy SPIRE, OpenBao, MinIO, and supporting Keycloak co
 
 Current execution status and latest validated outcomes are tracked separately in `docs/phase2_completion_status.md`.
 
+## Workflow schemas used by this validation plan
+
+1. Week 4 script workflow: `docs/diagrams/phase2-week4-workflow.mmd`.
+2. Week 5 script workflow: `docs/diagrams/phase2-week5-workflow.mmd`.
+3. Week 6 script workflow: `docs/diagrams/phase2-week6-workflow.mmd`.
+4. End-to-end script workflow: `docs/diagrams/phase2-end2end-workflow.mmd`.
+
+## Technical trust schemas for architecture analysis
+
+Use this second schema family when the objective is technical PKI and IAM understanding rather than operator execution order.
+
+### Static view (deployment and trust relationships at rest)
+
+1. Phase 2 static trust architecture: `docs/diagrams/phase2-static-trust-architecture.mmd`.
+
+### Dynamic view (runtime interactions during proof scenarios)
+
+1. Week 4 token exchange sequence: `docs/diagrams/phase2-week4-token-exchange-sequence.mmd`.
+2. Week 5 SPIRE workload identity sequence: `docs/diagrams/phase2-week5-spire-sequence.mmd`.
+3. Week 6 OpenBao and MinIO zero-secret sequence: `docs/diagrams/phase2-week6-openbao-minio-sequence.mmd`.
+
+These dynamic sequence diagrams are intentionally aligned with the Week 4, Week 5, and Week 6 acceptance scripts, including positive and negative branches.
+
+Placement recommendation:
+
+1. Keep this document focused on requirements, criteria, and acceptance commands.
+2. Keep diagram source files versioned under `docs/diagrams/` and referenced from here.
+3. Keep workflow diagrams for operator run order and technical trust diagrams for PKI and IAM semantics.
+
 ## Execution status on 2026-09-02
 
 Phase 2 scripts currently used in the `lab1` environment:
@@ -24,7 +53,7 @@ Validated so far:
 
 Still pending in Phase 2:
 
-1. End-to-end proof that combines the full zero-secret chain in one demonstrator workload.
+1. No pending baseline proof items as of 2026-09-02.
 
 ## Week 4: Cluster token and Keycloak token-exchange proof
 
@@ -213,3 +242,7 @@ OpenFGA and ReBAC policy concepts map to IAM conditions and policy bindings on e
 2. Keep all validation commands under version control as scripts where possible.
 3. Preserve at least one positive path and one negative path for each workload-identity proof.
 4. Treat Phase 2 as complete only when the end-to-end zero-secret demonstration passes, not only when the components are installed.
+
+## Annexe: agent self-reference
+
+This document now separates operator workflows from technical trust analysis by referencing a dedicated static architecture diagram and dedicated dynamic sequence diagrams for Week 4, Week 5, and Week 6.

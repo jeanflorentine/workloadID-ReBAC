@@ -1,0 +1,29 @@
+sequenceDiagram
+    autonumber
+    participant OP as Operator week6 script
+    participant AP as openbao authz ok pod
+    participant DP as openbao authz denied pod
+    participant K8S as Kubernetes token reviewer API
+    participant OBAO as OpenBao kubernetes auth
+    participant OBPOL as OpenBao role and policy
+    participant MADM as MinIO admin API
+    participant MDATA as MinIO S3 data API
+    OP->>AP: Start Week 6 validation
+    AP->>OBAO: Login with service account JWT and role
+    OBAO->>K8S: Review JWT against cluster trust
+    K8S-->>OBAO: Token review valid
+    OBAO->>OBPOL: Evaluate bound service account and namespace
+    OBPOL-->>OBAO: Allow and attach read policy
+    OBAO-->>AP: Issue leased client token with TTL
+    AP->>OBAO: Read secret phase2 week6
+    OBAO-->>AP: Return dynamic secret value
+    DP->>OBAO: Login with unauthorized JWT
+    OBAO->>OBPOL: Evaluate role binding for denied pod
+    OBPOL-->>OBAO: Deny login
+    OBAO-->>DP: Return auth failure
+    AP->>MADM: Request temporary access key with expiry
+    MADM-->>AP: Return short lived access key and secret key
+    AP->>MDATA: Write and read object with temporary credentials
+    MDATA-->>AP: Return object payload success
+    DP->>MDATA: Attempt object operation with wrong secret
+    MDATA-->>DP: Deny invalid access key signature

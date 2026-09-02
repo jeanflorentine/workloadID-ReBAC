@@ -1,0 +1,15 @@
+%%{init: {"themeVariables": {"fontSize": "20px"}, "flowchart": {"nodeSpacing": 40, "rankSpacing": 70}} }%%
+flowchart TB
+    A[Start phase2-week6.ps1] --> B[Wait OpenBao and MinIO pods ready]
+    B --> C[Apply week6 zero-secret demo manifest]
+    C --> D[Rollout authorized and denied deployments]
+    D --> E[Configure OpenBao Kubernetes auth and role policy]
+    E --> F[Authorized pod login to OpenBao]
+    F --> G[Read dynamic secret and lease TTL]
+    G --> H[Denied pod login must fail]
+    H --> I[Create MinIO short-lived access key]
+    I --> J[Use temp key for bucket write and read]
+    J --> K[Negative MinIO check with wrong secret]
+    K --> L{All gates pass}
+    L -->|No| X[Fail gate]
+    L -->|Yes| M[Emit WEEK6 markers and complete]

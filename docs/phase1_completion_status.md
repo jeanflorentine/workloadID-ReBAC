@@ -43,6 +43,18 @@ What is complete:
 3. Full in-cluster platform substrate: Keycloak, SPIRE, OpenBao, MinIO, and OpenFGA
 4. Executable verification for convergence and runtime pod health
 
+## Workflow schemas
+
+Diagram source placement for this phase:
+
+1. Existing workstation bootstrap diagram: `bootstrap-workstation.mmd`.
+2. Phase 1 readiness gate workflow: `docs/diagrams/phase1-week1-workflow.mmd`.
+
+Usage recommendation:
+
+1. Keep source diagrams as `.mmd` files under `docs/diagrams/`.
+2. Keep this completion document concise by linking to schemas instead of pasting all Mermaid blocks inline.
+
 ## Recorded evidence locations
 
 1. Phase 1 completion rationale and verdict: `docs/phase1_completion_status.md`.

@@ -1,0 +1,15 @@
+%%{init: {"themeVariables": {"fontSize": "20px"}, "flowchart": {"nodeSpacing": 40, "rankSpacing": 70}} }%%
+flowchart TB
+    A[Start phase2-end2end-zero-secret.ps1] --> B[Wait SPIRE OpenBao MinIO control planes]
+    B --> C[Apply week5 and week6 manifests]
+    C --> D[Rollout end-to-end demo workloads]
+    D --> E[Verify SPIRE allowed ID present denied ID absent]
+    E --> F[Verify no static app credentials in workload manifest]
+    F --> G[OpenBao authorized login and secret retrieval]
+    G --> H[OpenBao denied workload login must fail]
+    H --> I[MinIO temp credential issuance and object operation]
+    I --> J[MinIO negative path with wrong secret must fail]
+    J --> K[Revocation gate modifies OpenBao role binding]
+    K --> L[Formerly authorized login must fail]
+    L --> M[Restore OpenBao role binding]
+    M --> N[Emit E2E markers and complete]

@@ -64,6 +64,37 @@ Week 6 implementation-coverage note:
 2. MinIO temporary credentials are validated in `accesskey-expiry` mode.
 3. Strict STS web-identity exchange remains a hardening extension that requires enabling and wiring MinIO OpenID provider for the selected identity issuer.
 
+## Workflow schemas
+
+Phase 2 diagram sources:
+
+1. Week 4 token-exchange workflow: `docs/diagrams/phase2-week4-workflow.mmd`.
+2. Week 5 SPIRE identity workflow: `docs/diagrams/phase2-week5-workflow.mmd`.
+3. Week 6 OpenBao and MinIO workflow: `docs/diagrams/phase2-week6-workflow.mmd`.
+4. End-to-end zero-secret workflow: `docs/diagrams/phase2-end2end-workflow.mmd`.
+
+## Technical trust schemas
+
+Static architecture source:
+
+1. `docs/diagrams/phase2-static-trust-architecture.mmd`.
+
+Dynamic runtime sequence sources:
+
+1. `docs/diagrams/phase2-week4-token-exchange-sequence.mmd`.
+2. `docs/diagrams/phase2-week5-spire-sequence.mmd`.
+3. `docs/diagrams/phase2-week6-openbao-minio-sequence.mmd`.
+
+Reading rule for reviewers:
+
+1. Use workflow diagrams to understand script execution order.
+2. Use technical trust diagrams to understand issuer, verifier, relying party, policy decision, and deny paths.
+
+Placement decision:
+
+1. Keep full Mermaid sources in `docs/diagrams/`.
+2. Use this completion document as the index and evidence summary for those schemas.
+
 ## Important implementation note from this milestone
 
 The final working Keycloak 26.1.4 model in this lab is:
