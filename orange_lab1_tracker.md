@@ -8,6 +8,23 @@ Single source of truth for planning, deployment strategy, and execution tracking
 - Related reference: C:\Projects\KeyCloack-Lab\KeyCloack_Lab_Book_tracker.md
 - Last updated: 2026-09-02
 
+## Release notes (sync snapshot)
+
+Sync timestamp: 2026-09-02
+
+1. Pushed commit: 51d85ab on branch main to origin/main.
+2. Scope synced in this push:
+  - Phase 1 script rename from scripts/smoke-test.ps1 to scripts/phase1-week1.ps1 and reference alignment.
+  - Phase 2 Week 4 validation automation updates in scripts/phase2-week4.ps1 and workload manifest addition in kubernetes/overlays/lab1/week4-workload-identity-demo.yaml.
+  - Remote OpenTofu helper workflow added in scripts/tofu-remote.ps1 with bootstrap, sync, validate, plan, and apply actions.
+  - IaC environment wiring updates in tofu/envs/lab1 and new Helm module implementations for SPIRE, OpenBao, MinIO, and OpenFGA.
+  - Documentation updates and additions: docs/phase1_completion_status.md, docs/phase2_completion_status.md, docs/phase2_workload_identity_validation.md, docs/runbooks.md, and bootstrap-workstation.mmd.
+3. Validation outcome captured at sync time:
+  - Remote plan via scripts/tofu-remote.ps1 reported no drift.
+  - Remote apply completed with 0 added, 0 changed, and 0 destroyed.
+4. Known non-blocking follow-up retained after sync:
+  - Proxmox provider deprecation warning for proxmox_virtual_environment_download_file, targeted for migration to proxmox_download_file in a cleanup pass.
+
 ---
 
 ## 1. Context and constraints

@@ -23,7 +23,7 @@ The main proof areas for Phase 2 are:
 
 ### Latest validated achievement
 
-The Week 4 workload-identity execution slice is now complete in the `lab1` environment.
+Weeks 4, 5, and 6 execution slices are now complete in the `lab1` environment.
 
 What is now proven:
 
@@ -34,6 +34,9 @@ What is now proven:
 5. Keycloak admin automation works through `kcadm.sh` inside the running Keycloak pod.
 6. A positive RFC 8693 token exchange succeeds for the permitted target client.
 7. A negative RFC 8693 token exchange fails for an invalid audience, which confirms that the exchange is not granted blindly.
+8. SPIRE registration entries include the authorized Week 5 SPIFFE identity and exclude the denied one.
+9. OpenBao Kubernetes-auth login succeeds for the authorized service account and fails for the denied one.
+10. MinIO expiring access-key credentials are issued successfully, support a positive object operation, and fail the negative wrong-secret check.
 
 ### Clarifying explanation
 
@@ -47,7 +50,7 @@ A stronger negative proof can be added later by targeting a real client without 
 
 Phase 2 is in progress.
 
-Week 4 is complete, but the full phase is not yet complete because the SPIRE, OpenBao, MinIO, and end-to-end zero-secret proofs still remain to be validated.
+Weeks 4 through 6 are complete, but the full phase is not yet complete because the single end-to-end zero-secret demonstrator proof still remains to be validated.
 
 ## Important implementation note from this milestone
 
@@ -224,10 +227,7 @@ Week 4 execution slice completed
 
 ## Remaining Phase 2 execution order
 
-1. SPIRE workload identity proof
-2. OpenBao dynamic secret proof
-3. MinIO federated temporary credential proof
-4. End-to-end zero-secret demonstration
+1. End-to-end zero-secret demonstration
 
 ## Annexe: agent self-reference
 

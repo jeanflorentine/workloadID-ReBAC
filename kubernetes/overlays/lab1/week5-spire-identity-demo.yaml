@@ -1,0 +1,63 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: spire-demo-allowed
+  namespace: authorization
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: spire-demo-allowed
+  namespace: authorization
+  labels:
+    app: spire-demo-allowed
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: spire-demo-allowed
+  template:
+    metadata:
+      labels:
+        app: spire-demo-allowed
+    spec:
+      serviceAccountName: spire-demo-allowed
+      containers:
+        - name: demo
+          image: curlimages/curl:8.12.1
+          command:
+            - sh
+            - -c
+            - while true; do sleep 3600; done
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: spire-demo-denied
+  namespace: identity
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: spire-demo-denied
+  namespace: identity
+  labels:
+    app: spire-demo-denied
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: spire-demo-denied
+  template:
+    metadata:
+      labels:
+        app: spire-demo-denied
+    spec:
+      serviceAccountName: spire-demo-denied
+      containers:
+        - name: demo
+          image: curlimages/curl:8.12.1
+          command:
+            - sh
+            - -c
+            - while true; do sleep 3600; done

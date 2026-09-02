@@ -8,25 +8,23 @@ The goal is not only to deploy SPIRE, OpenBao, MinIO, and supporting Keycloak co
 
 Current execution status and latest validated outcomes are tracked separately in `docs/phase2_completion_status.md`.
 
-## Execution start status on 2026-09-02
+## Execution status on 2026-09-02
 
-The first Week 4 execution slice is now running in the `lab1` environment.
+Phase 2 scripts currently used in the `lab1` environment:
 
-Phase 2 operational entrypoint script: `scripts/phase2-week4.ps1`.
+1. `scripts/phase2-week4.ps1`
+2. `scripts/phase2-week5.ps1`
+3. `scripts/phase2-week6.ps1`
 
-Verified facts:
+Validated so far:
 
-1. The cluster OIDC discovery document is reachable.
-2. The cluster JWKS endpoint is reachable.
-3. A demo workload with a projected ServiceAccount token is deployed in the `identity` namespace.
-4. The projected token claims are validated for issuer, subject, audience, and expiry.
-5. Keycloak admin automation works from inside the running Keycloak pod using `kcadm.sh` with a writable temporary config path.
+1. Week 4 token-exchange proof is complete.
+2. Week 5 SPIRE workload-identity proof is complete.
+3. Week 6 OpenBao and MinIO zero-secret execution slice is complete.
 
-Still pending inside Week 4:
+Still pending in Phase 2:
 
-1. Seed the dedicated Keycloak realm, client, and token-exchange policy objects.
-2. Execute the positive RFC 8693 token-exchange path.
-3. Execute at least one negative token-exchange path.
+1. End-to-end proof that combines the full zero-secret chain in one demonstrator workload.
 
 ## Week 4: Cluster token and Keycloak token-exchange proof
 
@@ -82,6 +80,7 @@ Two workloads receive SPIFFE identities through SPIRE. Each workload proves its 
 ### Exact smoke or acceptance commands
 
 ```powershell
+Set-Location -LiteralPath 'C:\Projects\Orange-Lab1'; .\scripts\phase2-week5.ps1
 ssh -i C:/Users/jflorentin/.ssh/orange_lab1_bootstrap_ed25519 debian@192.168.1.210 "sudo k3s kubectl get pods -n spire"
 ssh -i C:/Users/jflorentin/.ssh/orange_lab1_bootstrap_ed25519 debian@192.168.1.210 "sudo k3s kubectl exec -n spire deploy/spire-server -- /opt/spire/bin/spire-server entry show"
 ssh -i C:/Users/jflorentin/.ssh/orange_lab1_bootstrap_ed25519 debian@192.168.1.210 "sudo k3s kubectl exec -n <app-namespace> <workload-pod> -- printenv | grep SPIFFE"
@@ -112,6 +111,7 @@ An authorized pod authenticates to OpenBao with its Kubernetes identity and rece
 ### Exact smoke or acceptance commands
 
 ```powershell
+Set-Location -LiteralPath 'C:\Projects\Orange-Lab1'; .\scripts\phase2-week6.ps1
 ssh -i C:/Users/jflorentin/.ssh/orange_lab1_bootstrap_ed25519 debian@192.168.1.210 "sudo k3s kubectl get pods -n secrets"
 ssh -i C:/Users/jflorentin/.ssh/orange_lab1_bootstrap_ed25519 debian@192.168.1.210 "sudo k3s kubectl exec -n <app-namespace> <authorized-pod> -- sh -c 'cat /var/run/secrets/kubernetes.io/serviceaccount/token'"
 curl -s -X POST https://<openbao-host>/v1/auth/kubernetes/login -d '{"role":"<role>","jwt":"<jwt>"}'
@@ -142,6 +142,7 @@ A workload exchanges federated identity for short-lived S3-compatible credential
 ### Exact smoke or acceptance commands
 
 ```powershell
+Set-Location -LiteralPath 'C:\Projects\Orange-Lab1'; .\scripts\phase2-week6.ps1
 ssh -i C:/Users/jflorentin/.ssh/orange_lab1_bootstrap_ed25519 debian@192.168.1.210 "sudo k3s kubectl get pods -n storage"
 curl -k -X POST "https://<minio-host>/?Action=AssumeRoleWithWebIdentity&Version=2011-06-15&WebIdentityToken=<token>"
 AWS_ACCESS_KEY_ID=<access-key> AWS_SECRET_ACCESS_KEY=<secret-key> AWS_SESSION_TOKEN=<session-token> aws --endpoint-url https://<minio-host> s3 ls s3://<bucket>
