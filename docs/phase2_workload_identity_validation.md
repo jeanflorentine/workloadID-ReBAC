@@ -131,6 +131,18 @@ curl -s -o /dev/null -w "%{http_code}`n" -X POST https://<openbao-host>/v1/auth/
 
 A workload exchanges federated identity for short-lived S3-compatible credentials, accesses a MinIO bucket, and then loses access when the token expires or when the identity binding is incorrect.
 
+### Mandatory Week 6 closure checklist
+
+Week 6 is considered complete only when both implementations are covered:
+
+1. Implementation 1.1: one pod obtains a dynamic secret from OpenBao or Vault through Kubernetes authentication.
+2. Implementation 1.2: one pod obtains temporary MinIO credentials by exchanging a federated identity token.
+
+Current validated state in this lab:
+
+1. Implementation 1.1 is validated by `scripts/phase2-week6.ps1` and `scripts/phase2-end2end-zero-secret.ps1`.
+2. Implementation 1.2 is currently validated in `accesskey-expiry` mode (short-lived MinIO access keys) and marked for strict STS web-identity exchange hardening when MinIO OpenID provider is enabled.
+
 ### Exact success criteria
 
 1. MinIO pods are healthy.
@@ -175,11 +187,25 @@ One application runs on the cluster with no long-lived application secret stored
 ### Exact smoke or acceptance commands
 
 ```powershell
+Set-Location -LiteralPath 'C:\Projects\Orange-Lab1'; .\scripts\phase2-end2end-zero-secret.ps1
 ssh -i C:/Users/jflorentin/.ssh/orange_lab1_bootstrap_ed25519 debian@192.168.1.210 "sudo k3s kubectl get pods -A"
 ssh -i C:/Users/jflorentin/.ssh/orange_lab1_bootstrap_ed25519 debian@192.168.1.210 "sudo k3s kubectl get secrets -A"
 ssh -i C:/Users/jflorentin/.ssh/orange_lab1_bootstrap_ed25519 debian@192.168.1.210 "sudo k3s kubectl logs -n <app-namespace> deploy/<demo-app>"
 ssh -i C:/Users/jflorentin/.ssh/orange_lab1_bootstrap_ed25519 debian@192.168.1.210 "sudo k3s kubectl exec -n <app-namespace> deploy/<demo-app> -- <runtime-check-command>"
 ```
+
+## Transposition note to hyperscaler commercial services
+
+Use this mapping when moving the same Week 6 zero-secret pattern to public cloud platforms:
+
+1. Kubernetes workload identity:
+AWS EKS IRSA, Azure AKS Workload Identity, Google GKE Workload Identity.
+2. Secret manager with workload-authn:
+HashiCorp Vault or OpenBao equivalent, AWS Secrets Manager plus IAM role, Azure Key Vault plus managed identity, Google Secret Manager plus Workload Identity Federation.
+3. Object storage temporary credentials:
+MinIO STS pattern maps to AWS STS for S3, Azure user delegation SAS for Blob Storage, and Google short-lived access tokens for Cloud Storage.
+4. Policy and authorization model:
+OpenFGA and ReBAC policy concepts map to IAM conditions and policy bindings on each hyperscaler.
 
 ## Notes on execution
 

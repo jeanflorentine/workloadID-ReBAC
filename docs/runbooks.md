@@ -35,6 +35,20 @@
 	- `reference_vm_ipv4 = "192.168.1.210"`
 	- `reference_vm_name = "orange-lab1"`
 	- `selected_target_platform = "proxmox"`
+13. `scripts/phase2-week5.ps1` passed with explicit markers showing the authorized SPIFFE identity entry is present and the denied identity entry is absent.
+14. `scripts/phase2-week6.ps1` passed with OpenBao dynamic-secret positive and negative checks, plus MinIO short-lived credential positive and negative checks.
+15. `scripts/phase2-end2end-zero-secret.ps1` passed the full chain: SPIRE identity check, static-credential absence check, OpenBao secret retrieval, MinIO temporary credential use, and revocation-failure gate.
+
+## Week 6 transposition note to hyperscaler names
+
+1. OpenBao or Vault dynamic secret with Kubernetes auth maps to:
+	- AWS IAM role plus Secrets Manager
+	- Azure Managed Identity plus Key Vault
+	- Google Workload Identity plus Secret Manager
+2. MinIO temporary credentials map to cloud-native short-lived object-storage credentials:
+	- AWS STS for S3
+	- Azure user delegation SAS for Blob
+	- Google short-lived access tokens for Cloud Storage
 
 ## Rebuild rule
 

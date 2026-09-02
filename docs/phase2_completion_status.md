@@ -48,9 +48,21 @@ A stronger negative proof can be added later by targeting a real client without 
 
 ## Status verdict
 
-Phase 2 is in progress.
+Phase 2 is complete for the current lab baseline.
 
-Weeks 4 through 6 are complete, but the full phase is not yet complete because the single end-to-end zero-secret demonstrator proof still remains to be validated.
+The end-to-end zero-secret demonstrator proof now passes through `scripts/phase2-end2end-zero-secret.ps1`, including:
+
+1. SPIRE allowed identity present and denied identity absent.
+2. Explicit check that the workload manifest does not embed static application credentials.
+3. OpenBao authorized secret retrieval with positive lease TTL.
+4. MinIO temporary credential issuance with positive object operation and negative wrong-secret check.
+5. Revocation gate where policy-binding removal causes login failure.
+
+Week 6 implementation-coverage note:
+
+1. OpenBao Kubernetes-auth dynamic secret flow is validated.
+2. MinIO temporary credentials are validated in `accesskey-expiry` mode.
+3. Strict STS web-identity exchange remains a hardening extension that requires enabling and wiring MinIO OpenID provider for the selected identity issuer.
 
 ## Important implementation note from this milestone
 
@@ -227,7 +239,7 @@ Week 4 execution slice completed
 
 ## Remaining Phase 2 execution order
 
-1. End-to-end zero-secret demonstration
+1. None. Phase 2 baseline proof chain is complete.
 
 ## Annexe: agent self-reference
 
