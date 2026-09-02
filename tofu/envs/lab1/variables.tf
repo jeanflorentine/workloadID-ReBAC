@@ -205,3 +205,45 @@ variable "kubeconfig_path" {
   description = "Path to the local kubeconfig used by Kubernetes and Helm providers."
   type        = string
 }
+
+variable "enable_keycloak" {
+  description = "Whether to deploy Keycloak through Helm."
+  type        = bool
+  default     = false
+}
+
+variable "keycloak_namespace" {
+  description = "Namespace where Keycloak is deployed."
+  type        = string
+  default     = "identity"
+}
+
+variable "keycloak_release_name" {
+  description = "Helm release name for Keycloak."
+  type        = string
+  default     = "keycloak"
+}
+
+variable "keycloak_chart_version" {
+  description = "Bitnami Keycloak chart version."
+  type        = string
+  default     = "24.4.13"
+}
+
+variable "keycloak_admin_username" {
+  description = "Initial Keycloak admin user."
+  type        = string
+  default     = "admin"
+}
+
+variable "keycloak_admin_password" {
+  description = "Initial Keycloak admin password."
+  type        = string
+  sensitive   = true
+}
+
+variable "keycloak_timeout_seconds" {
+  description = "Helm wait timeout for Keycloak installation."
+  type        = number
+  default     = 900
+}

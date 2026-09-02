@@ -74,3 +74,17 @@ module "kube_namespaces" {
 
   namespace_names = var.namespace_names
 }
+
+module "helm_keycloak" {
+  source = "../../modules/helm_keycloak"
+  count  = var.enable_keycloak ? 1 : 0
+
+  depends_on = [module.kube_namespaces]
+
+  namespace       = var.keycloak_namespace
+  release_name    = var.keycloak_release_name
+  chart_version   = var.keycloak_chart_version
+  admin_username  = var.keycloak_admin_username
+  admin_password  = var.keycloak_admin_password
+  timeout_seconds = var.keycloak_timeout_seconds
+}
